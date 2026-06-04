@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Кнопка — генератор</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 AI-Кнопка</h1>
+        <p>Введите задачу (без промптов, простыми словами):</p>
+        <textarea id="userInput" rows="4" placeholder="Например: напиши вежливый ответ на негативный отзыв клиента о том, что кофе остыл"></textarea>
+        <button id="generateBtn">✨ Сгенерировать</button>
+        <div id="output" class="output"></div>
+    </div>
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('userInput').value;
+            if (!prompt) return alert('Введите задачу');
+            document.getElementById('output').innerHTML = '⏳ Генерация...';
+            try {
+                const res = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await res.json();
+                document.getElementById('output').innerHTML = `<strong>Результат:</strong><br>${data.result || data.error}`;
+            } catch (err) {
+                document.getElementById('output').innerHTML = '❌ Ошибка сервера';
+            }
+        });
+    </script>
+</body>
+</html>
